@@ -52,15 +52,21 @@ function render() {
     `);
   }
 
-  gameBoard.insertAdjacentHTML("beforeend", `
-  <div class="word-attempt input">
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[0] ?? "_"}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[1] ?? "_"}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[2] ?? "_"}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[3] ?? "_"}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[4] ?? "_"}</div>
-  </div>
-`);
+  if (!gameState.gameOver) {
+    gameBoard.insertAdjacentHTML("beforeend", `
+    <div class="word-attempt input">
+      <div class="word-attempt-letter">${gameState.currentGuessLetters[0] ?? "_"}</div>
+      <div class="word-attempt-letter">${gameState.currentGuessLetters[1] ?? "_"}</div>
+      <div class="word-attempt-letter">${gameState.currentGuessLetters[2] ?? "_"}</div>
+      <div class="word-attempt-letter">${gameState.currentGuessLetters[3] ?? "_"}</div>
+      <div class="word-attempt-letter">${gameState.currentGuessLetters[4] ?? "_"}</div>
+    </div>
+    `);
+  } else {
+    gameBoard.insertAdjacentHTML("afterbegin", `
+      <button class="reset-game" type="button">Reset</button>
+    `);
+  }
 }
 // new PastGuess("XYZAB", ["letter-correct", "letter-partial-correct", "", "", ""]);
 
@@ -68,18 +74,19 @@ const gameState = {
   secretWord: "",
   pastGuesses: [
   ],
-  currentGuessLetters: []
-}
+  currentGuessLetters: [],
+  gameOver: false,
+};
 
 function submitGuess() {
   const guessWord = gameState.currentGuessLetters.join("");
   const comparisonResult = compareWords(guessWord, gameState.secretWord);
+  gameState.pastGuesses.push(
+    new PastGuess(gameState.currentGuessLetters, comparisonResult)
+    );
+
   if (guessWord == gameState.secretWord) {
-    // game over, player wins
-  } else {
-    gameState.pastGuesses.push(
-      new PastGuess(gameState.currentGuessLetters, comparisonResult)
-      );
+    gameState.gameOver = true;
   }
 
   gameState.currentGuessLetters = [];
@@ -118,6 +125,10 @@ function compareWords(testWord, answerWord) {
 }
 
 function handleInput(letter) {
+  if (gameState.gameOver) {
+    return;
+  }
+
   if (gameState.currentGuessLetters.length < 5) {
     gameState.currentGuessLetters.push(letter);
   }
@@ -125,6 +136,14 @@ function handleInput(letter) {
   if (gameState.currentGuessLetters.length == 5) {
     submitGuess();
   }
+}
+
+function resetGame() {
+  gameState.secretWord = getRandomWord();
+  gameState.pastGuesses = [];
+  gameState.gameOver = false;
+  gameState.currentGuessLetters = [];
+  // console.log("The new secret word is: " + gameState.secretWord);
 }
 
 document.addEventListener("keydown", (event) => {
@@ -137,6 +156,13 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+document.addEventListener("click", (event) => {
+  if (event.target.classList.contains("reset-game")) {
+    resetGame();
+    render();
+  }
+});
+
 gameState.secretWord = getRandomWord();
-console.log("The secret word is: " + gameState.secretWord);
+// console.log("The secret word is: " + gameState.secretWord);
 render();
