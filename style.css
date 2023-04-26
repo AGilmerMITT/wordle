@@ -1,0 +1,41 @@
+body {
+  background-color: black;
+}
+
+#wordle-board {
+  display: flex;
+  flex-flow: row wrap;
+  width: 400px;
+  margin: 0 auto;
+}
+
+.word-attempt {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+
+.word-attempt-letter {
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 48px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.input .word-attempt-letter {
+  text-decoration: underline;
+}
+
+.letter-correct {
+  background-color: greenyellow;
+  color: black;
+}
+
+.letter-partial-correct {
+  background-color: yellow;
+  color: black;
+}
