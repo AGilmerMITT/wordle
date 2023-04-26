@@ -54,11 +54,11 @@ function render() {
 
   gameBoard.insertAdjacentHTML("beforeend", `
   <div class="word-attempt input">
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[0] ?? ""}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[1] ?? ""}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[2] ?? ""}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[3] ?? ""}</div>
-    <div class="word-attempt-letter">${gameState.currentGuessLetters[4] ?? ""}</div>
+    <div class="word-attempt-letter">${gameState.currentGuessLetters[0] ?? "_"}</div>
+    <div class="word-attempt-letter">${gameState.currentGuessLetters[1] ?? "_"}</div>
+    <div class="word-attempt-letter">${gameState.currentGuessLetters[2] ?? "_"}</div>
+    <div class="word-attempt-letter">${gameState.currentGuessLetters[3] ?? "_"}</div>
+    <div class="word-attempt-letter">${gameState.currentGuessLetters[4] ?? "_"}</div>
   </div>
 `);
 }
@@ -109,7 +109,7 @@ function compareWords(testWord, answerWord) {
         && !answerLettersUsed[j]) {
         testLettersUsed[i] = true;
         answerLettersUsed[j] = true;
-        result [j] = "letter-partial-correct";
+        result [i] = "letter-partial-correct";
       }
     }
   }
