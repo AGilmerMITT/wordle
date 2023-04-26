@@ -2,6 +2,10 @@ body {
   background-color: black;
 }
 
+#game-container {
+  display: flex;
+}
+
 #wordle-board {
   display: flex;
   flex-flow: row wrap;
@@ -38,4 +42,9 @@ body {
 .letter-partial-correct {
   background-color: yellow;
   color: black;
+}
+
+#focus-caller {
+  color: white;
+  width: 25%;
 }

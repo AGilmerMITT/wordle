@@ -163,6 +163,16 @@ document.addEventListener("click", (event) => {
   }
 });
 
+setInterval(() => {
+  const focusElem = document.getElementById("focus-caller");
+  focusElem.textContent = "";
+  if (!document.hasFocus()) {
+    focusElem.insertAdjacentHTML("afterbegin", `
+      <h1 class="focus-message">Please click here to resume play</h1>
+    `);
+  }
+}, 300);
+
 gameState.secretWord = getRandomWord();
 // console.log("The secret word is: " + gameState.secretWord);
 render();
