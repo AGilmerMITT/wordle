@@ -72,14 +72,26 @@ const gameState = {
 }
 
 function submitGuess() {
+  const guessWord = gameState.currentGuessLetters.join("");
+  const comparisonResult = compareWords(guessWord, gameState.secretWord);
+  if (guessWord == gameState.secretWord) {
+    // game over, player wins
+  } else {
+    gameState.pastGuesses.push(
+      new PastGuess(gameState.currentGuessLetters, comparisonResult)
+      );
+  }
 
+  gameState.currentGuessLetters = [];
 }
 
 function compareWords(testWord, answerWord) {
   const testLettersUsed = [false, false, false, false, false];
-  const answerLettersUsed = [];
-  const result = [];
+  const answerLettersUsed = [false, false, false, false, false];
+  const result = ["", "", "", "", ""];
 
+  // first pass: correct letters
+  // O(n) time
   for (let i = 0; i < 5; i++) {
     if (testWord[i] == answerWord[i]) {
       testLettersUsed[i] = true;
@@ -87,6 +99,22 @@ function compareWords(testWord, answerWord) {
       result[i] = "letter-correct";
     }
   }
+
+  // second pass: misplaced correct letters
+  // O(n^2) time
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < 5; j++) {
+      if (testWord[i] == answerWord[j]
+        && !testLettersUsed[i]
+        && !answerLettersUsed[j]) {
+        testLettersUsed[i] = true;
+        answerLettersUsed[j] = true;
+        result [j] = "letter-partial-correct";
+      }
+    }
+  }
+
+  return result;
 }
 
 function handleInput(letter) {
@@ -95,14 +123,13 @@ function handleInput(letter) {
   }
 
   if (gameState.currentGuessLetters.length == 5) {
-    // submit guess
+    submitGuess();
   }
 }
 
 document.addEventListener("keydown", (event) => {
-  console.log(event);
   if (event.key >= 'a' && event.key <= 'z') {
-    handleInput(event.key);
+    handleInput(event.key.toUpperCase());
     render();
   }
   if (event.key == "Enter") {
@@ -111,4 +138,5 @@ document.addEventListener("keydown", (event) => {
 });
 
 gameState.secretWord = getRandomWord();
+console.log("The secret word is: " + gameState.secretWord);
 render();
